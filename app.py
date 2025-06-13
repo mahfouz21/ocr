@@ -139,8 +139,8 @@ gemini_corrector = GeminiTextCorrector(api_key=GEMINI_API_KEY, model_name="gemin
 def index():
     return render_template('index.html')
 
-@app.route('/OCR', methods=['POST'])
-def ocr():
+@app.route('/upload', methods=['POST'])
+def upload():
     if 'file' not in request.files:
         return render_template('index.html', error="No file part")
     file = request.files['file']
