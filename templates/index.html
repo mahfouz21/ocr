@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RxClose Prescription Upload</title>
+  <style>
+    body {
+      font-family: 'Georgia', serif;
+      background-color: #f7f3f0;
+      margin: 0;
+      padding: 0;
+    }
+    .navbar {
+      background: #e6ecf3;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+    .navbar-left {
+      display: flex;
+      align-items: center;
+    }
+    .logo {
+      width: 48px;
+      height: 48px;
+      margin-right: 10px;
+      /* <img src="/static/logo.png" alt="RxClose Logo" class="logo"> */
+    }
+    .brand {
+      font-size: 1.7rem;
+      font-weight: bold;
+      color: #222;
+      letter-spacing: 1px;
+    }
+    .navbar-right {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+      font-size: 1.1rem;
+    }
+    .navbar-right a {
+      color: #444;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .navbar-right a:hover {
+      color: #2a7be4;
+    }
+    .main-content {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 3rem;
+      margin-top: 3rem;
+      padding: 0 2rem;
+    }
+    .left-section {
+      max-width: 500px;
+      text-align: left;
+    }
+    .left-section h1 {
+      font-size: 2.8rem;
+      font-weight: 500;
+      margin-bottom: 1.2rem;
+      line-height: 1.1;
+    }
+    .left-section p {
+      font-size: 1.2rem;
+      color: #444;
+      margin-bottom: 2.5rem;
+    }
+    .upload-box {
+      background: #fff;
+      border: 2px dashed #b3b3b3;
+      border-radius: 16px;
+      width: 350px;
+      min-height: 260px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+      position: relative;
+    }
+    .upload-box h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1.2rem;
+      color: #333;
+    }
+    .upload-box input[type="file"] {
+      margin-top: 1.5rem;
+      display: block;
+    }
+    .upload-hint {
+      font-size: 0.95rem;
+      color: #888;
+      margin-top: 1.2rem;
+    }
+    .upload-btn {
+      background: #4a7ecf;
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 0.9rem 2.2rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(74,126,207,0.08);
+      transition: background 0.2s;
+      margin-top: 1.5rem;
+    }
+    .upload-btn:hover {
+      background: #2a7be4;
+    }
+    .result-container {
+      margin: 2.5rem auto 0 auto;
+      max-width: 900px;
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+    }
+    .text-block {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      padding: 1.5rem 1.2rem;
+      min-width: 350px;
+      max-width: 420px;
+      max-height: 350px;
+      overflow: auto;
+      word-break: break-word;
+      font-size: 1.08rem;
+      color: #222;
+    }
+    .text-block h4 {
+      margin-top: 0;
+      margin-bottom: 0.7rem;
+      color: #4a7ecf;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    @media (max-width: 900px) {
+      .main-content {
+        flex-direction: column;
+        align-items: center;
+      }
+      .result-container {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <div class="navbar-left">
+      <!-- <img src="/static/logo.png" alt="RxClose Logo" class="logo"> -->
+      <span class="brand">RxClose</span>
+    </div>
+    <div class="navbar-right">
+      <a href="#">home</a>
+      <a href="#">search</a>
+      <a href="#">Category</a>
+      <a href="#">Contact Us</a>
+      <a href="#">cart</a>
+      <a href="#">Login</a>
+    </div>
+  </div>
+  <div class="main-content">
+    <div class="left-section">
+      <h1>Convert your prescription to text.<br> Instantly.</h1>
+      <p>convert your prescription to text to make the search easier</p>
+    </div>
+    <form class="upload-box" action="/upload" method="post" enctype="multipart/form-data">
+      <h3>Upload and transcribe</h3>
+      <input id="fileInput" type="file" name="file" accept=".jpg,.jpeg,.png,.pdf" required>
+      <div class="upload-hint">Supports images and PDF formats. Maximum 25MB.</div>
+      <button class="upload-btn" type="submit">Upload</button>
+    </form>
+  </div>
+  {% if recognized_text or structured_text %}
+  <div class="result-container">
+    {% if recognized_text %}
+    <div class="text-block">
+      <h4>Extracted Text (OCR):</h4>
+      <pre>{{ recognized_text }}</pre>
+    </div>
+    {% endif %}
+    {% if structured_text %}
+    <div class="text-block">
+      <h4>Structured Text:</h4>
+      <pre>{{ structured_text }}</pre>
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+</body>
+</html>
